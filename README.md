@@ -4,7 +4,7 @@ Vous aurez besoin de ``Wireshark`` et du logiciel ``aircrack-ng`` pour ce labora
 
 Si vous utilisez une distribution Kali, tout est déjà pré-installé. Pour la version Windows du logiciel ``aircrack-ng``ou pour son installation sur d'autres distributions, référez-vous au
 [site web aircrack-ng](https://aircrack-ng.org) et/ou au gestionnaire de paquets de votre distribution.
- 
+
 # Identification d'un dispositif
 
 ## Introduction
@@ -42,22 +42,32 @@ Nous savons que la cible s’est hébergée à l’hôtel « Black Rain » et qu
 
 > **_Question :_** Quel filtre avez-vous utilisé
 > 
-> **_Réponse :_** 
+> **_Réponse :_** Nous avons utilisé le filtre : wlan.fc.type_subtype == 0x0004 qui permet d'afficher les Probe Request
 
 ---
 > **_Question :_** Quel est l’adresse MAC de la cible ?
-> 
-> **_Réponse :_** 
+>
+> **_Réponse :_** fc:f1:36:22:49:74
+>
+> On cherche les probe request pour starbucks, seulemement 1 a starbucks dans ses informations
 
 ---
 > **_Question :_** Quel est le nom du constructeur de l’interface sans fils de la cible ?
-> 
-> **_Réponse :_** 
+>
+> **_Réponse :_** Samsung comme indiqué sous la colonne "Source"
+>
+> ![](images\Q3-4.png)
 
 ---
 > **_Question :_** Quel autres endroits la cible a-t-elle probablement visités ?
-> 
-> **_Réponse :_** 
+>
+> **_Réponse :_** Migros, GVA Airport, Black Rain, Fleur de Pains, Starbucks 
+>
+> On cherche les autres probes avec cette adresse mac: 
+>
+> wlan.fc.type_subtype == 0x0004 && wlan.ta == fc:f1:36:22:49:74
+>
+> ![](images\Q3-4.png)
 
 ---
 
@@ -103,17 +113,19 @@ Maintenant que vous avez la clé WEP, configurez la dans Wireshark afin de déch
 
 > **_Question :_** Combien de temps avez-vous attendu pour obtenir la clé WEP ?
 > 
-> **_Réponse :_** 
+> **_Réponse :_** La clé est arrivée instantanément, pas eu de temps d'attente.
 
 ---
 > **_Montrer une capture d'écran de l'obtention de la clé WEP_**
-> 
+>
 > **_Capture ici_** 
+>
+> ![](images\Q6.png)
 
 ---
 > **_Question :_** Arrivez-vous à récupérer les informations d’identification (credentials) de l’authentification basique http contenue dans la capture ?
 > 
-> **_Réponse :_** 
+> **_Réponse :_** admin:admin , il faut utiliser le filtre Wireshark http.authorization
 
 ---
 
@@ -139,8 +151,10 @@ Nous utiliserons Wireshark pour trouver l’authentification WPA contenue dans l
 * Analyser les messages du 4-way handshake. En particulier, essayer de trouver les chiffres aléatoires (Nonces) échangés entre le client et l’AP.
 
 > **_Fournir une capture d'écran des chiffres aléatoires_**
-> 
+>
 > **_Capture ici_** 
+>
+> ![](images\Q8.1.png)![](images\Q8.2.png)![](images\Q8.3.png)![](images\Q8.4.png)
 
 ---
 
@@ -151,7 +165,7 @@ Nous allons nous servir de l’outil aircrack-ng et d’un dictionnaire pour ret
 
 * Copier [le dictionnaire](files/french_dico.txt) sur votre machine locale 
 * Utilisez aircrack-ng en ligne de commandes pour cracker la passphrase du réseau WPA avec le même [fichier de capture chiffrée avec WPA](files/coursWLAN-WPA.cap) que vous avez déjà copié.
- 
+
 ```
 aircrack-ng <nom-du-fichier-capture> -w <nom-du-dictionnaire>
 ```
@@ -162,22 +176,26 @@ aircrack-ng <nom-du-fichier-capture> -w <nom-du-dictionnaire>
 
 > **_Question :_** Combien de temps avez-vous attendu pour obtenir la passphrase WPA ?
 > 
-> **_Réponse :_** 
+> **_Réponse :_** une dizaine de secondes
 
 ---
 > **_Montrer une capture d'écran de l'obtention de la passphrase WPA_**
-> 
+>
 > **_Capture ici_** 
+>
+> ![](images\Q9.png)
 
 ---
 > **_Question :_** Lors de la capture, la cible a fait un « ping » sur un serveur. Arrivez-vous à dire de quel serveur il s’agit ?
 
-> 
-> **_Réponse :_** 
-> 
-> Adresse IP du serveur : ?
 >
-> Nom de Domaine : ?
+> **_Réponse :_** 
+>
+> Adresse IP du serveur : 31.13.64.35
+>
+> Nom de Domaine : facebook.com
+>
+> Il s'agit du serveur de facebook
 
 
 
@@ -188,12 +206,22 @@ Nous avons enlevé une seule trame (choisie stratégiquement) du fichier de capt
 * Répondre aux questions suivantes :
 
 > **_Question :_** Est-ce que vous arrivez à refaire l'exercice ? Pourquoi ou pourquoi pas ?
-> 
+>
 > **_Réponse :_** 
+>
+> Il ne trouve pas de network, probablement parce qu'il manque un message dans le 4way handshake lors de la conversation pour l'authentification.
+>
+> ![](images\Q11.png)
 
 ---
 > **_Question :_** Sur la base de votre réponse précédente, arrivez-vous à déduire quelle trame a été effacée ?
 
-> 
 > **_Réponse :_** 
-> 
+>
+> Sur la première capture, on observe qu'il y a 4 messages entre Cisco et Apple.
+>
+> ![](images\Q12b.png)
+>
+> En revanche, sur la deuxième capture on observe qu'il manque le message 2 entre Cisco et Apple.
+>
+> ![](E:\Etudes\HEIG-VD\2e année\SRX\2.Labo\Teaching-HEIGVD-SRX-2020-Laboratoire-WiFi\images\Q12.png)
