@@ -56,7 +56,7 @@ Nous savons que la cible s’est hébergée à l’hôtel « Black Rain » et qu
 >
 > **_Réponse :_** Samsung comme indiqué sous la colonne "Source"
 >
-> ![](images\Q3-4.png)
+> ![](\images\Q3-4.png)
 
 ---
 > **_Question :_** Quel autres endroits la cible a-t-elle probablement visités ?
